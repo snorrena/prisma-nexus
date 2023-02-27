@@ -1,0 +1,18 @@
+POST http://localhost:4000/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+query getAllUsers{
+  users {
+    id
+    firstName
+    lastName
+    writtenPosts {
+      id
+      title
+      body
+      published
+      authorId
+    }
+  }
+}
