@@ -3,22 +3,33 @@ Goal: Graphql with code first schema generation
 - nexus is used to generate the graphql schema programmically
 - prisma is used to connect the graphql server to the postgresql database
 
+notes:
+the .env files must be created in the project root and include the postgres connection string to the database: "nexus"
+the database must exist and be owned by user 'postgres'
+to update prisma:
+  pnpm install prisma@latest
+  pnpm install @prisma/client@latest
+  pnpm prisma generate
+
+  add post install script to package.json
+    "postinstall": "prisma generate"
+
 # Dependencies:
 
 - node env - npm init -y // initializes node in the project root directory and creates the 'package.json' file
-  npm i nexus graphql appolo-server // nexus will auto-gen types and schema from code, graphql is ths query language and runtime, appolo is a graphql compliant server. Appolo also provide a gui
-  npm i @prisma/client //used to connect the graphql server to a database
-  npm i --save-dev prisma //prisma is used to map our model schema data to our postgres database
+  pnpm i nexus graphql appolo-server // nexus will auto-gen types and schema from code, graphql is ths query language and runtime, appolo is a graphql compliant server. Appolo also provide a gui
+  pnpm i @prisma/client //used to connect the graphql server to a database
+  pnpm i --save-dev prisma //prisma is used to map our model schema data to our postgres database
 
   # prisma executables
 
-  npx prisma generate //creates the prisma folder including the schema.prisma file where database model and relationships are defined
-  npx prisma migrate dev --name init --preview-feature //run to syncronize the schema.prisma SDL with the attached database
-  npx prisma migrate dev --name dev //change the name and run again to persist changes made in the schema.prisma file
+  pnpm prisma generate //creates the prisma folder including the schema.prisma file where database model and relationships are defined
+  pnpm prisma migrate dev --name init --preview-feature //run to syncronize the schema.prisma SDL with the attached database
+  pnpm prisma migrate dev --name dev //change the name and run again to persist changes made in the schema.prisma file
 
 # Dev Dependencies:
 
-- npm i --save-dev typescript ts-node-dev
+- pnpm i --save-dev typescript ts-node-dev
 - typescript is the type safe programming language used, ts-node-dev is used to transpile and run .ts file on the fly and re-start the app after saving changes
 
 # Schema auto generation from code:

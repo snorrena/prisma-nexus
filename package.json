@@ -9,7 +9,8 @@
     "build": "tsc",
     "generate": "ts-node --transpile-only api/schema",
     "test": "pnpm generate && jest",
-    "migrate": "pnpm exec prisma migrate dev"
+    "migrate": "pnpm exec prisma migrate dev",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
