@@ -7,12 +7,12 @@ notes:
 the .env files must be created in the project root and include the postgres connection string to the database: "nexus"
 the database must exist and be owned by user 'postgres'
 to update prisma:
-  pnpm install prisma@latest
-  pnpm install @prisma/client@latest
-  pnpm prisma generate
+pnpm install prisma@latest
+pnpm install @prisma/client@latest
+pnpm prisma generate
 
-  add post install script to package.json
-    "postinstall": "prisma generate"
+add post install script to package.json
+"postinstall": "prisma generate"
 
 # Dependencies:
 
@@ -86,7 +86,7 @@ explaination: runs the dev ts-node server, transpiles typescript code starting w
 
 import/export syntax:
 typescript files and installed dependencies are imported and exported/re-exported as follows
-import \* as types from './folderName' // types is then used as object in the importing code
+import \* as types from './folderName' // imports the default exports as 'types' is then used as object in the importing file
 import { fileName } from './folderName'// the named type 'fileName' is then used in the importing code
 export _ as types from ./graphql //this imports the index.ts file. The indes.ts is used to consolidate and re-export all types files in the same directory. The syntax for export is: export _ from './Post'
 all required objects are exported from the separate type files:
@@ -144,3 +144,20 @@ note: the schema.ts file imports all from the default index.ts file in the graph
 --README.md
 --schema.graphql.ts //nexus generated sdl schema definition language
 --tsconfig.json //typescript compiler configuration details
+
+# how to run
+
+start the postgres server that includes the 'nexus' database that will be read/written to using prisma
+pnpm run dev //starts the dev script in the package.json file. ts-node-dev transpiles our typescript and runs as javascript in memory starting from the index.ts files in the api directory in our project root
+the appolo graphql server is exposed a http://localhost:4000
+
+# execute server queries
+
+1. right click on the server url in the console window or enter the url manually in a browser. If you are connected to the internet,
+   the appolo graphql web ui will open and allow your to inspect your graphql server and run queries
+2. install the rest plugin into vscode, create and run a graphql query from the file inside the ide
+3. run one of the curl requests including in the curl.tx file
+4. run the fetch scripts.ts in the fetch folder with ts-node or deno
+   deno run --allow-net ./fetch/script.ts
+   or run live server to load a web page with script to query the graphql server and output returned data to the browser
+   live-server --open=./fetch/index.html

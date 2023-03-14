@@ -8,12 +8,12 @@ type User = {
   id: string;
   firstName: string;
   lastName: string;
-  posts: Post[];
+  writtenPosts: Post[];
 };
 type Users = {
   User: User[];
 };
-const nexusGraphqlResponse = async (): Promise<Users> => {
+const nexusGraphqlResponse = async (): Promise<Response> => {
   const response = await fetch("http:localhost:4000", {
     method: "POST",
     headers: {
@@ -36,8 +36,24 @@ const nexusGraphqlResponse = async (): Promise<Users> => {
           }`,
     }),
   });
-  return response.json(); // For JSON Response
+  return response; // For JSON Response
   //   return response.text(); // For HTML or Text Response
 };
 
-console.log(await nexusGraphqlResponse());
+await nexusGraphqlResponse()
+  .then((res) => res.json())
+  .then((result) => {
+    const userArray: User[] = result.data.users;
+    // console.log(userArray);
+    userArray.forEach((user: User) => {
+      console.log(`id: ${user.id}`);
+      console.log(`firstName: ${user.firstName}`);
+      console.log(`lastName: ${user.lastName}`);
+      if (user.writtenPosts && user.writtenPosts.length != 0) {
+        console.log(`writtenPosts:`);
+        user.writtenPosts.forEach((post) => {
+          console.log(post);
+        });
+      }
+    });
+  });

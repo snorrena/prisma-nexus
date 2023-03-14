@@ -1,0 +1,13 @@
+curl requests to our graphql server. The first returns json. The second and third pass the returned data through json.tool and jq for pretting formatting termainal output
+
+legend for the curl requests
+-i // includes the header details in the server response 
+-H //includes the header details passed in with the request. In this curl, the header is just the content type json
+-X POST,GET,PUT,UPDATE //indicates the request method to be executed on the server
+-d // flag for the body data
+
+curl -i -H 'Content-Type: application/json' -X POST -d '{"query": "query getAllUsers{users {id firstName lastName writtenPosts { id title body published authorId } } }"}' http://localhost:4000/graphql
+
+curl -H 'Content-Type: application/json' -X POST -d '{"query": "query getAllUsers{users {id firstName lastName writtenPosts { id title body published authorId } } }"}' http://localhost:4000/graphql | python -m json.tool
+
+curl -H 'Content-Type: application/json' -X POST -d '{"query": "query getAllUsers{users {id firstName lastName writtenPosts { id title body published authorId } } }"}' http://localhost:4000/graphql | jq
