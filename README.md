@@ -59,11 +59,15 @@ Definition of the graphql types and schema are contained in the files under /api
 --Post.ts // SDL for creating and mutating 'Posts'
 --User.ts //SDL for created and mutating 'Users'
 
+/fetch //folder containing a sub project that uses a script to fetch data from our graphql server and display in a web page
+
 /node_modules //npm install packages
 
 /prisma //folder containg all prisma sdl and migration files
 --/migrations //prisma migrations files
 --schema.prisma //file contains the prisma generator/database connection and sdl models
+
+/Rest-Requests //folder containing files that include graphql queries and mutations that use the vscode rest extention to call our graphql database
 
 /test //jest test files
 
@@ -71,13 +75,19 @@ Definition of the graphql types and schema are contained in the files under /api
 
 .gitignore //files/folders to be ignored by git (specifically the .env folder)
 
-graphqlReq.rest // a file for testing the graphql endpoints from within vscode
+.graphqlconfig //???
+
+curl.txt //file including format for curl queries to our graphql db including formating of the return data with jq & python json-tool
 
 nexus-typegen.ts //nexus generated file not for editing
 
-package-lock.json //npm lock file not for editing
-
 package.json //list of npm dependencies and scripts
+
+package-lock.json //npm lock file not for editing// file is deleted after update to use pnpm
+
+pnpm-lock.yaml // new package lock file after update to use pnpm instead of npm
+
+pnpm-workspace.yaml - replaces workspaces in package.json file when using pnpm
 
 README.md
 
@@ -99,7 +109,7 @@ ex.
 Post.ts
 export const post = Objecttype({})
 
-schema.prisam //this is the main file used defining the prisma db client generator. This defines how will connect from graphql to the database
+schema.prisam //this is the main file used defining the prisma db client generator. This defines how graphql will connect to our postgres database
 the database source (postgres) and connection url are referenced in this file. The connection url is pulled from the .env file
 the models in this file are used by prisma to set up the database tables in postgres.
 
@@ -129,6 +139,77 @@ export const server = new ApolloServer({ schema, context });
 //the 'context' object is a simulation of an in memory database with seed data
 //the server object is then imported into the index.ts file at the project root directory.
 //When the index.ts file in the root directory is executed by ts-node-dev, the server is created and started listing on the default port at localhost
+
+nexus code generation explanation
+nexus uses the makeSchema method in the schema.ts file to generate code for connections to our graphql database.
+
+the schema.ts file imports all the nexus object types and extended object types that define queries into our graphql database
+the exported schema create inludes types imported from the .api folder, outputs from the generated nexus/prisma code files: schema.graphql.ts & nexus-typegen.ts and context from the database .context.ts
+
+the server.ts file creates the apollo server object passing in the schema and context object as input parameters to the constructor method
+
+Nexus magic query code generation
+all obj related code is contained in the /api/graphql dir. The index.ts file is used to export sibling files of User.ts and Post.ts.
+Nexus uses object type and extended object type to defined queries and mutations of our database as per the schema definintion /prisma/schema.prisma client, datasource and model definitions (Post and User)
+
+nexus syntax
+the object type is at the top and includes all fields as represented in our prisma schema definition
+ex. in our prisma schema definition we have defined obects of User and Post with associated fields and relations. These fields and relations are migrated to our database by prisma.
+
+the exported object type includes the following fields
+name
+description
+definition
+
+all are passed into the object type constructor method as an obect parameter
+
+the definition field includes the object type definition block
+'t' is passed in as type and all fields are defined.
+field types and attributes are applied in the definition ex. t.nonnull.string('id'); t is non null of type string and is name 'id'
+if an object has a one to many relation to another object type defined in the schema.prisma file then it is represented in the object type as a field list ex. t.list.field("writtenPosts")
+the list field method takes in a string for the field name and object that defined the object type ex. Post and resolve method to return the associated field objects
+the object param include the 'Type' and a resolve method. The type must be imported into the file in order to be used here ex. Post type in a User object
+the resolve method takes in three parameters: \_root, args & ctx. The \_root is used to access field values in the root obejct. The args represent input query values and the ctx is the prisma database object connector. The list object is returned in the resolve method by making a database query on the associated object type
+
+const userPosts = ctx.db.post.findMany({
+where: { authorId: \_root.id },
+});
+userPosts.then((post) => console.log(post));
+return userPosts;
+
+the resolve method returns the list of user posts for a user object where the authorId field on the post matched the \_root.id field on the user object
+
+the extend type is used to defined queries and mutations on the base user object type
+the extend type constructor method takes in an object that include the type name and a definition method
+The type name is either query or mutation
+the definition method takes in t as the object block defintion
+the definition method body include the t.field method
+the field method. The method takes in a string representing the name of the query or mutation and an object definition
+the object defintion includes the type (object to be queried or mutated), args (arguments to be used in the mutation or query) and the resolve methhod
+the resolve method takes in the root object, args and ctx (context) to be used to query or mutate
+the root obj param can be used to collect parameters on the root obj, args is used to reference parameters passed in with the query or mutation, the ctx/context is used to the make the query/mutation on the database object
+
+a user is create using the addUser mutation query. A user is created using only two fields: firstName & LastName. A user obect is created and passed into the user create method to complete the action
+
+export const addUser = extendType({ //extension of the base User object
+type: "Mutation", //query is a mutation of our database
+definition(t) {//definition of the mutation action
+t.nonNull.field("addUser", {
+type: User, //the query is on type User
+args: { // arguments passed in via the query as key values pairs include attribute specifications ie not null string etc.
+firstName: nonNull(stringArg()),
+lastName: nonNull(stringArg()),
+},
+resolve(\_root, args, ctx) { //resolve method including params (args: passed in via the query/mutation, ctx: the database context and object methods)
+const user = {
+firstName: args.firstName,
+lastName: args.lastName,
+};
+return ctx.db.user.create({ data: user }); //passes in a user object to the create method of the user object
+},
+});
+},
+});
 
 file explanation:
 ->api

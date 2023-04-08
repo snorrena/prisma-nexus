@@ -10,4 +10,4 @@ mutation deleteUserById($id: String!) {
   }
 }
 
-{"id":"bd6467bc-21be-4c24-98a9-0173cf1bd9ea"}
+{"id":"3233c20a-e426-42cb-bfb8-d01f7fb3b576"}

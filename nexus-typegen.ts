@@ -58,7 +58,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addUser: NexusGenRootTypes['User']; // User!
     createDraft: NexusGenRootTypes['Post']; // Post!
-    deleteUserById: NexusGenRootTypes['User'] | null; // User
+    deleteUserById: NexusGenRootTypes['User']; // User!
     posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
     publish: NexusGenRootTypes['Post'] | null; // Post
   }

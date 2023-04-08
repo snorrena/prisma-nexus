@@ -5,7 +5,7 @@
 type Mutation {
   addUser(firstName: String!, lastName: String!): User!
   createDraft(body: String!, id: String!, title: String!): Post!
-  deleteUserById(id: String!): User
+  deleteUserById(id: String!): User!
   posts: [Post]
   publish(draftId: String!): Post
 }

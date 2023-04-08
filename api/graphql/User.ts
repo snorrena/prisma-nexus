@@ -47,7 +47,7 @@ export const addUser = extendType({
 export const deleteUser = extendType({
   type: "Mutation",
   definition(t) {
-    t.field("deleteUserById", {
+    t.nonNull.field("deleteUserById", {
       type: User,
       args: {
         id: nonNull(stringArg()),
