@@ -6,6 +6,10 @@ Goal: Graphql with code first schema generation
 notes:
 the .env files must be created in the project root and include the postgres connection string to the database: "nexus"
 the database must exist and be owned by user 'postgres'
+
+the database url var in the .env file. The database type is postgres. The database name is nexus. The database owner and password is postgres:1Mysterynorpg. The db path and port are localhost:5432
+DATABASE_URL="postgresql://postgres:1Mysterynorpg@localhost:5432/nexus"
+
 to update prisma:
 pnpm install prisma@latest
 pnpm install @prisma/client@latest
@@ -16,7 +20,7 @@ add post install script to package.json
 
 # Dependencies:
 
-- node env - npm init -y // initializes node in the project root directory and creates the 'package.json' file
+- node env - pnpm init -y // initializes node in the project root directory and creates the 'package.json' file
   pnpm i nexus graphql appolo-server // nexus will auto-gen types and schema from code, graphql is ths query language and runtime, appolo is a graphql compliant server. Appolo also provide a gui
   pnpm i @prisma/client //used to connect the graphql server to a database
   pnpm i --save-dev prisma //prisma is used to map our model schema data to our postgres database
