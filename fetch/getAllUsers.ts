@@ -55,5 +55,6 @@ await nexusGraphqlResponse()
           console.log(post);
         });
       }
+      console.log("---");
     });
   });

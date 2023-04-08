@@ -53,6 +53,7 @@ Definition of the graphql types and schema are contained in the files under /api
 -/graphql
 --index.ts //consolidation of underlying SDL(schema definition code)
 --Post.ts // SDL for creating and mutating 'Posts'
+--User.ts //SDL for created and mutating 'Users'
 
 /node_modules //npm install packages
 

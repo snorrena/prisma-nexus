@@ -1,0 +1,13 @@
+POST  http://localhost:4000/graphql
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation deleteUserById($id: String!) {
+  deleteUserById(id: $id) {
+    id
+    firstName
+    lastName
+  }
+}
+
+{"id":"bd6467bc-21be-4c24-98a9-0173cf1bd9ea"}
