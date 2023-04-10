@@ -1,0 +1,18 @@
+GRAPHQL http://localhost:4000/graphql
+
+query getAllUsers{
+  users {
+    id
+    firstName
+    lastName
+    writtenPosts {
+      id
+      title
+      body
+      published
+      authorId
+    }
+  }
+}
+
+###
